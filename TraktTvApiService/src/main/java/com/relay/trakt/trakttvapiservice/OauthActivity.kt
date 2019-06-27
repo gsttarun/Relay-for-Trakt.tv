@@ -8,7 +8,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import com.relay.trakt.trakttvapiservice.ApiConstants.AUTHORIZATION_CODE
 import com.relay.trakt.trakttvapiservice.Constants.CODE
 import kotlinx.android.synthetic.main.activity_oauth.*
 import timber.log.Timber
@@ -29,17 +28,22 @@ class OauthActivity : AppCompatActivity() {
                 if (url.contains(CODE)) {
                     url.split("=")[1]?.let {
                         val intent = Intent(Constants.IntentAction.AUTH_CODE).apply {
-                            putExtra(AUTHORIZATION_CODE, it)
+                            putExtra(Constants.Intent.AUTH_CODE, it)
                         }
                         sendBroadcast(intent)
-                        finish()
                     }
                 } else if (url.contains(Constants.ERROR)) {
                     val errorValue = sanitizer.getValue(Constants.ERROR)
                     val errorDescription = sanitizer.getValue(Constants.ERROR_DESCRIPTION)
+                    val intent = Intent(Constants.IntentAction.AUTH_CODE).apply {
+                        putExtra(Constants.Intent.ERROR, errorValue)
+                        putExtra(Constants.Intent.ERROR_DESCRIPTION, errorDescription)
+                    }
+                    sendBroadcast(intent)
                     Timber.e("error = $errorValue")
                     Timber.e("error description = $errorDescription")
                 }
+                finish()
                 true
             } else
                 super.shouldOverrideUrlLoading(view, request)

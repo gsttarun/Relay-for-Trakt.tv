@@ -4,18 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.relay.trakt.trakttvapiservice.Resource
+import com.relay.trakt.trakttvapiservice.Status
 import com.relay.trakt.trakttvapiservice.TraktRepository
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    val onAuthorizedObserver = Observer<Boolean> {
-        when (it) {
-            true -> {
+    val onAuthorizedObserver = Observer<Resource<String>> {
+        when (it.status) {
+            Status.LOADING -> {
+
+            }
+            Status.SUCCESS -> {
                 textv.text = TraktRepository.accessToken.toString()
             }
-            false -> {
-
+            Status.ERROR -> {
+                textv.text = it.message
             }
         }
     }

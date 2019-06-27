@@ -20,5 +20,11 @@ data class AuthTokenResponse(
     val tokenType: String? = null,
 
     @field:SerializedName("expires_in")
-    val expiresIn: Int? = null
+    val expiresIn: Int? = null,
+
+    @field:SerializedName("error")
+    val error: String? = null,
+
+    @field:SerializedName("error_description")
+    val errorDescription: String? = null
 )

@@ -1,12 +1,14 @@
 package com.relay.trakt.trakttvapiservice
 
-import com.google.gson.JsonObject
 import com.relay.trakt.trakttvapiservice.ApiConstants.APPLICATION_JSON
 import com.relay.trakt.trakttvapiservice.ApiConstants.AUTHORIZATION
 import com.relay.trakt.trakttvapiservice.ApiConstants.CONTENT_TYPE
 import com.relay.trakt.trakttvapiservice.ApiConstants.TRAKT_API_KEY
 import com.relay.trakt.trakttvapiservice.ApiConstants.TRAKT_API_VERSION
 import com.relay.trakt.trakttvapiservice.model.authToken.AuthTokenResponse
+import com.relay.trakt.trakttvapiservice.request.AccessTokenRequest
+import com.relay.trakt.trakttvapiservice.request.RefreshTokenRequest
+import com.relay.trakt.trakttvapiservice.request.RevokeAccessRequest
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -27,9 +29,14 @@ interface ApiService {
         @QueryMap queryMap: Map<String, String>
     ): Call<JSONObject>
 
-    //    @Headers("Content-Type: application/json")
     @POST("/oauth/token")
-    fun getAccessToken(@Body bodyJson: JsonObject): Call<AuthTokenResponse>
+    fun getAccessToken(@Body bodyJson: AccessTokenRequest): Call<AuthTokenResponse>
+
+    @POST("/oauth/token")
+    fun refreshAccessToken(@Body bodyJson: RefreshTokenRequest): Call<AuthTokenResponse>
+
+    @POST("/oauth/token")
+    fun revokeAccessToken(@Body bodyJson: RevokeAccessRequest): Call<AuthTokenResponse>
 }
 
 fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean = true): ApiService {

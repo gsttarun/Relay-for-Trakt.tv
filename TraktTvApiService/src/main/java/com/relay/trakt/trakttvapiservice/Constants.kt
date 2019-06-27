@@ -8,6 +8,9 @@ internal object Constants {
     object Intent {
         const val REDIRECT_URI = "redirect_uri"
         const val AUTH_URL = "authUrl"
+        const val ERROR_DESCRIPTION = "error_description"
+        const val ERROR = "error"
+        const val AUTH_CODE = "auth_code"
     }
 
     object Preferences {
