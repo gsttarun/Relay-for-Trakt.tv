@@ -69,4 +69,3 @@ fastlane/readme.md
 gradlew\.bat
 /gradlew
 gradle/wrapper/gradle-wrapper.jar
-/gradle.properties
