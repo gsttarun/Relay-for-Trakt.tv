@@ -2,9 +2,9 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
+
+apply plugin: 'kotlin-android-extensions'
 
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
@@ -19,11 +19,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        //keep these variables in gradle.properties
-        buildConfigField 'String', 'REDIRECT_URI', localProperties['RedirectUri']
-        buildConfigField 'String', 'CLIENT_ID', localProperties['ClientId']
-        buildConfigField 'String', 'CLIENT_SECRET', localProperties['ClientSecret']
-        manifestPlaceholders = [scheme: localProperties['Scheme'], host: localProperties['HostName']]
     }
     buildTypes {
         release {
@@ -37,10 +32,25 @@ android {
     productFlavors {
         staging {
             buildConfigField 'Boolean', 'IS_STAGING', 'true'
+            applicationIdSuffix ".staging"
+            //keep these variables in gradle.properties
+            buildConfigField 'String', 'REDIRECT_URI', localProperties['Staging_RedirectUri']
+            buildConfigField 'String', 'CLIENT_ID', localProperties['Staging_ClientId']
+            buildConfigField 'String', 'CLIENT_SECRET', localProperties['Staging_ClientSecret']
+            manifestPlaceholders = [hostPath  : localProperties['Staging_HostName'],
+                                    schemeName: localProperties['Staging_Scheme'],
+                                    appName:'@string/app_name_staging']
         }
 
         production {
             buildConfigField 'Boolean', 'IS_STAGING', 'false'
+            //keep these variables in gradle.properties
+            buildConfigField 'String', 'REDIRECT_URI', localProperties['RedirectUri']
+            buildConfigField 'String', 'CLIENT_ID', localProperties['ClientId']
+            buildConfigField 'String', 'CLIENT_SECRET', localProperties['ClientSecret']
+            manifestPlaceholders = [hostPath  : localProperties['HostName'],
+                                    schemeName: localProperties['Scheme'],
+                                    appName:'@string/app_name']
         }
     }
 
@@ -57,12 +67,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     testImplementation 'junit:junit:4.13-beta-3'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     debugImplementation('com.github.ajitsing:sherlock:1.0.4@aar') {
         transitive = true

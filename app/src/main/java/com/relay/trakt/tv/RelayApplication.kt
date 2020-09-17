@@ -18,11 +18,11 @@ class RelayApplication : Application() {
         }
 
         TraktRepository.initialize(
-            BuildConfig.CLIENT_ID,
-            BuildConfig.CLIENT_SECRET,
-            BuildConfig.REDIRECT_URI,
-            WeakReference(this@RelayApplication),
-            true
+                clientId = BuildConfig.CLIENT_ID,
+                clientSecret = BuildConfig.CLIENT_SECRET,
+                redirectURI = BuildConfig.REDIRECT_URI,
+                weakContext = WeakReference(this@RelayApplication),
+                isStaging = BuildConfig.IS_STAGING
         )
     }
 }

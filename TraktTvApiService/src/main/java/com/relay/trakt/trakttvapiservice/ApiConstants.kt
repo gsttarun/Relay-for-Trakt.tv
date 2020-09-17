@@ -16,6 +16,8 @@ object ApiConstants {
     const val TRAKT_API_KEY = "trakt-api-key"
     const val TRAKT_API_VERSION = "trakt-api-version"
     const val BEARER = "Bearer"
+    const val PAGE = "page"
+    const val LIMIT = "limit"
 
     object GRANT_TYPE {
         const val GRANT_TYPE = "grant_type"

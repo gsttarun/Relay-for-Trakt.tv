@@ -20,6 +20,7 @@ internal object Constants {
     }
 
     const val AUTH_URL = "https://trakt.tv/oauth/authorize"
+    const val STAGING_AUTH_URL = "https://staging.trakt.tv/oauth/authorize"
     const val BASE_URL = "https://api.trakt.tv"
     const val STAGING_URL = "https://api-staging.trakt.tv"
     const val ERROR_DESCRIPTION = "error_description"

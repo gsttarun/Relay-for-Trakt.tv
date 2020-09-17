@@ -1,11 +1,15 @@
 package com.relay.trakt.trakttvapiservice
 
+import com.google.gson.JsonObject
 import com.relay.trakt.trakttvapiservice.ApiConstants.APPLICATION_JSON
 import com.relay.trakt.trakttvapiservice.ApiConstants.AUTHORIZATION
 import com.relay.trakt.trakttvapiservice.ApiConstants.CONTENT_TYPE
 import com.relay.trakt.trakttvapiservice.ApiConstants.TRAKT_API_KEY
 import com.relay.trakt.trakttvapiservice.ApiConstants.TRAKT_API_VERSION
 import com.relay.trakt.trakttvapiservice.model.authToken.AuthTokenResponse
+import com.relay.trakt.trakttvapiservice.model.movies.PopularMovies
+import com.relay.trakt.trakttvapiservice.model.movies.TrendingMovies
+import com.relay.trakt.trakttvapiservice.model.userSettings.UserSettings
 import com.relay.trakt.trakttvapiservice.request.AccessTokenRequest
 import com.relay.trakt.trakttvapiservice.request.RefreshTokenRequest
 import com.relay.trakt.trakttvapiservice.request.RevokeAccessRequest
@@ -25,8 +29,8 @@ interface ApiService {
 
     @GET
     fun authorize(
-        @Url url: String,
-        @QueryMap queryMap: Map<String, String>
+            @Url url: String,
+            @QueryMap queryMap: Map<String, String>
     ): Call<JSONObject>
 
     @POST("/oauth/token")
@@ -35,23 +39,32 @@ interface ApiService {
     @POST("/oauth/token")
     fun refreshAccessToken(@Body bodyJson: RefreshTokenRequest): Call<AuthTokenResponse>
 
-    @POST("/oauth/token")
-    fun revokeAccessToken(@Body bodyJson: RevokeAccessRequest): Call<AuthTokenResponse>
+    @POST("/oauth/revoke")
+    fun revokeAccessToken(@Body bodyJson: RevokeAccessRequest): Call<JsonObject>
+
+    @GET("/users/settings")
+    suspend fun getUserSettings(): UserSettings
+
+    @GET("/movies/trending") // this API has pagination
+    suspend fun getTrendingMovies( @QueryMap queryMap: Map<String, Int>): List<TrendingMovies>
+
+    @GET("/movies/popular") // this API has pagination
+    suspend fun getPopularMovies(): List<PopularMovies>
 }
 
 fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean = true): ApiService {
 
     val headerInterceptor = Interceptor {
-        val request = it.request()?.let { request ->
-            request.newBuilder()?.apply {
+        val request = it.request().let { request ->
+            request.newBuilder().apply {
                 addHeader(CONTENT_TYPE, APPLICATION_JSON)
-                addHeader(TRAKT_API_KEY, clientId)
+//                addHeader(TRAKT_API_KEY, clientId)
                 addHeader(TRAKT_API_VERSION, "2")
-                TraktRepository.accessToken?.let { accessToken ->
+                TraktRepository.getAccessToken()?.let { accessToken ->
                     addHeader(AUTHORIZATION, "BEARER $accessToken")
                 }
             }
-        }?.build()
+        }.build()
 
         return@Interceptor it.proceed(request)
     }
@@ -64,12 +77,12 @@ fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean 
     }.build()
 
     return Retrofit.Builder()
-        .client(okHttpClient)
-        .baseUrl(baseUrl)
+            .client(okHttpClient)
+            .baseUrl(baseUrl)
 //        .addConverterFactory(ScalarsConverterFactory.create())
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create()
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create()
 }
 
 private fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {

@@ -60,6 +60,13 @@ class OauthActivity : AppCompatActivity() {
         intent?.getStringExtra(Constants.Intent.AUTH_URL)?.let {
             redirectUri = intent?.getStringExtra(Constants.Intent.REDIRECT_URI).toString()
             webview.webViewClient = webViewClient
+            webview.apply {
+                clearHistory()
+                clearFormData()
+                clearMatches()
+                clearCache(true)
+            }
+
             webview.loadUrl(it)
             Timber.e(it)
         }
