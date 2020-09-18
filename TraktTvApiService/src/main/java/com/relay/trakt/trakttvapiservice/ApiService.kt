@@ -58,7 +58,7 @@ fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean 
         val request = it.request().let { request ->
             request.newBuilder().apply {
                 addHeader(CONTENT_TYPE, APPLICATION_JSON)
-//                addHeader(TRAKT_API_KEY, clientId)
+                addHeader(TRAKT_API_KEY, clientId)
                 addHeader(TRAKT_API_VERSION, "2")
                 TraktRepository.getAccessToken()?.let { accessToken ->
                     addHeader(AUTHORIZATION, "BEARER $accessToken")
@@ -86,9 +86,9 @@ fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean 
 }
 
 private fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
-    return HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { message ->
+    return HttpLoggingInterceptor { message ->
         Timber.i(message)
-    }).apply {
+    }.apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 }

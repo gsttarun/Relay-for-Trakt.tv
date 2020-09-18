@@ -1,8 +1,6 @@
 package com.relay.trakt.tv
 
 import android.view.View
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 fun View.visible(){
     this.visibility=View.VISIBLE
@@ -24,4 +22,9 @@ inline fun <T> withAll(vararg receiver: T, block: T.() -> Unit) {
         //        with(it, block)
         it.runCatching(block)
     }
+}
+
+
+fun View.onClick(l: View.OnClickListener?) {
+    setOnClickListener(l)
 }

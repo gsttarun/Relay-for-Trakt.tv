@@ -17,16 +17,16 @@ class TestActivity : AppCompatActivity() {
     val onAuthorizedObserver = Observer<Resource<String>> {
         when (it.status) {
             Status.LOADING -> {
-
+                progressIndicator.visible()
             }
             Status.SUCCESS -> {
                 textv.text = TraktRepository.getAccessToken().toString()
-                withAll(authInAppButton,authInBrowserButton){
-                    invisible()
-                }
+                hideAuthButtons()
+                progressIndicator.gone()
             }
             Status.ERROR -> {
                 textv.text = it.message
+                progressIndicator.gone()
             }
         }
     }
@@ -37,45 +37,65 @@ class TestActivity : AppCompatActivity() {
 
         if (TraktRepository.isAuthorized()) {
             textv.text = TraktRepository.getAccessToken()
-        }
-        authInAppButton.setOnClickListener {
+            hideAuthButtons()
+        } else showAuthButtons()
+
+        authInAppButton.onClick {
             if (TraktRepository.isNotAuthorized())
                 TraktRepository.authorizeInApp().observe(this, onAuthorizedObserver)
         }
 
-        authInBrowserButton.setOnClickListener {
+        authInBrowserButton.onClick {
             if (TraktRepository.isNotAuthorized())
                 TraktRepository.authorizeFromExternalBrowser()
         }
 
-        logoutButton.setOnClickListener {
+        logoutButton.onClick {
             TraktRepository.revokeAccessToken().observe(this, Observer {
                 when (it.status) {
                     Status.LOADING -> {
+                        progressIndicator.visible()
                     }
                     Status.SUCCESS -> {
-                        textv.text = "Logout Successful"
                         Snackbar.make(textv, "Access Revoked", Snackbar.LENGTH_SHORT).show()
                         TraktRepository.clearData()
-                        withAll(authInAppButton,authInBrowserButton){
-                            visible()
-                        }
+                        showAuthButtons()
+                        logoutButton.gone()
+                        progressIndicator.gone()
+                        textv.text = "Logout Successful"
                     }
                     Status.ERROR -> {
                         TraktRepository.clearData()
                         Snackbar.make(textv, "Logout Failed", Snackbar.LENGTH_SHORT).show()
+                        progressIndicator.gone()
                     }
                 }
             })
         }
     }
 
+    private fun hideAuthButtons() {
+        withAll(authInAppButton, authInBrowserButton, orTextLabel) {
+            invisible()
+        }
+        logoutButton.visible()
+    }
+
+    private fun showAuthButtons() {
+        withAll(authInAppButton, authInBrowserButton, orTextLabel) {
+            visible()
+        }
+        logoutButton.gone()
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (TraktRepository.isNotAuthorized()) {
-            TraktRepository.handleResultFromBrowser(intent).observe(this, onAuthorizedObserver)
-        } else {
-            textv.text = TraktRepository.getAccessToken().toString()
+        if (intent?.action == Intent.ACTION_VIEW) {
+            if (TraktRepository.isNotAuthorized()) {
+                TraktRepository.handleResultFromBrowser(intent).observe(this, onAuthorizedObserver)
+            } else {
+                textv.text = TraktRepository.getAccessToken().toString()
+            }
         }
     }
 }

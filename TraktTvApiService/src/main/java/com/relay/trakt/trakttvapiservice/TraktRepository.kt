@@ -100,6 +100,7 @@ object TraktRepository {
 
         if (isNotAuthorized()) {
             weakContext.doWithContext {
+                onAuthorizedLiveData.postValue(Resource.loading())
                 initBroadCastReceiver()
                 val intentFilter = IntentFilter(Constants.IntentAction.AUTH_CODE)
                 it.registerReceiver(mReceiver, intentFilter)
@@ -204,6 +205,7 @@ object TraktRepository {
                 clientId = clientId
         )
 
+        onAuthorizedLiveData.postValue(Resource.loading())
         apiService.getAccessToken(bodyJson).enqueue(RCallback.getCallback {
             onSuccess { authTokenResponse, _ ->
                 authTokenResponse?.accessToken?.let { accessToken ->
@@ -270,6 +272,7 @@ object TraktRepository {
                 clientId = clientId
         )
 
+        revokeAccessResultLiveData.postValue(Resource.loading())
         apiService.revokeAccessToken(bodyJson).enqueue(RCallback.getCallback {
             onSuccess { _, message ->
                 revokeAccessResultLiveData.postValue(Resource.success(null, message))
