@@ -1,12 +1,12 @@
 package com.relay.trakt.trakttvapiservice
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.UrlQuerySanitizer
+import android.os.Build
 import android.os.Bundle
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import com.relay.trakt.trakttvapiservice.Constants.CODE
 import kotlinx.android.synthetic.main.activity_oauth.*
@@ -59,7 +59,6 @@ class OauthActivity : AppCompatActivity() {
 
         intent?.getStringExtra(Constants.Intent.AUTH_URL)?.let {
             redirectUri = intent?.getStringExtra(Constants.Intent.REDIRECT_URI).toString()
-            webview.webViewClient = webViewClient
             webview.apply {
                 clearHistory()
                 clearFormData()
@@ -67,8 +66,27 @@ class OauthActivity : AppCompatActivity() {
                 clearCache(true)
             }
 
+            clearCookies(this)
+
+            webview.webViewClient = webViewClient
+
             webview.loadUrl(it)
             Timber.e(it)
+        }
+    }
+
+    fun clearCookies(context: Context?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            CookieManager.getInstance().removeAllCookies(null)
+            CookieManager.getInstance().flush()
+        } else if (context != null) {
+            val cookieSyncManager = CookieSyncManager.createInstance(context)
+            cookieSyncManager.startSync()
+            val cookieManager: CookieManager = CookieManager.getInstance()
+            cookieManager.removeAllCookie()
+            cookieManager.removeSessionCookie()
+            cookieSyncManager.stopSync()
+            cookieSyncManager.sync()
         }
     }
 }
