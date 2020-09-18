@@ -9,17 +9,17 @@
     
     
     <application
+        android:name=".RelayApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".RelayApplication"
         tools:replace="android:label">
         
         <activity
-            android:name=".MainActivity"
+            android:name=".TestActivity"
             android:launchMode="singleTop">
             
             <intent-filter>
@@ -34,15 +34,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 
                 <data
-                    android:scheme="app"
-                    android:host="${hostPath}"
+                    android:host='${hostPath}'
+                    android:scheme="${schemeName}"
                     />
-    
-                <data
-                    android:scheme="https"
-                    android:host="${hostPath}"
-                    />
-
             </intent-filter>
         </activity>
     </application>

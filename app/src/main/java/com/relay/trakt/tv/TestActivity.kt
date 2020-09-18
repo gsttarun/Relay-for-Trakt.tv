@@ -12,7 +12,7 @@ import com.relay.trakt.trakttvapiservice.Status
 import com.relay.trakt.trakttvapiservice.TraktRepository
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class TestActivity : AppCompatActivity() {
 
     val onAuthorizedObserver = Observer<Resource<String>> {
         when (it.status) {

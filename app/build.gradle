@@ -7,7 +7,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 def localProperties = new Properties()
-localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+localProperties.load(new FileInputStream(rootProject.file("app.properties")))
 
 android {
     compileSdkVersion 29
@@ -33,7 +33,7 @@ android {
         staging {
             buildConfigField 'Boolean', 'IS_STAGING', 'true'
             applicationIdSuffix ".staging"
-            //keep these variables in gradle.properties
+            // These variables are in app.properties
             buildConfigField 'String', 'REDIRECT_URI', localProperties['Staging_RedirectUri']
             buildConfigField 'String', 'CLIENT_ID', localProperties['Staging_ClientId']
             buildConfigField 'String', 'CLIENT_SECRET', localProperties['Staging_ClientSecret']
@@ -44,7 +44,7 @@ android {
 
         production {
             buildConfigField 'Boolean', 'IS_STAGING', 'false'
-            //keep these variables in gradle.properties
+            // These variables are in app.properties
             buildConfigField 'String', 'REDIRECT_URI', localProperties['RedirectUri']
             buildConfigField 'String', 'CLIENT_ID', localProperties['ClientId']
             buildConfigField 'String', 'CLIENT_SECRET', localProperties['ClientSecret']
