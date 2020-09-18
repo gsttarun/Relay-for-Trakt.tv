@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Relay for Trakt.tv</string>
+    <string name="app_name_staging">Relay - Staging</string>
+</resources>
