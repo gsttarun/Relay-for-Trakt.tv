@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: "org.jetbrains.kotlin.plugin.parcelize"
 
 android {
     compileSdkVersion 28
@@ -30,6 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -38,17 +41,17 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     //Unit and UI Testing
     testImplementation 'junit:junit:4.13-beta-3'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.core:core-ktx:1.3.2'
 
     //Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0'
 
     //Retrofit

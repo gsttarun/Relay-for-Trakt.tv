@@ -8,63 +8,66 @@ import com.google.android.material.snackbar.Snackbar
 import com.relay.trakt.trakttvapiservice.Status
 import com.relay.trakt.trakttvapiservice.TraktRepository
 import com.relay.trakt.trakttvapiservice.rObserver
-import kotlinx.android.synthetic.main.activity_main.*
+import com.relay.trakt.tv.databinding.ActivityMainBinding
 
 class TestActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     private val onAuthorizedObserver = rObserver<String> {
         onLoading {
-            progressIndicator.visible()
+            binding.progressIndicator.visible()
         }
         onSuccess { _, _ ->
-            textv.text = TraktRepository.getAccessToken().toString()
+            binding.textv.text = TraktRepository.getAccessToken().toString()
             hideAuthButtons()
-            progressIndicator.gone()
+            binding.progressIndicator.gone()
 
         }
         onError { message, throwable ->
-            textv.text = message
-            progressIndicator.gone()
+            binding.textv.text = message
+            binding.progressIndicator.gone()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         if (TraktRepository.isAuthorized()) {
-            textv.text = TraktRepository.getAccessToken()
+            binding.textv.text = TraktRepository.getAccessToken()
             hideAuthButtons()
         } else showAuthButtons()
 
-        authInAppButton.onClick {
+        binding.authInAppButton.onClick {
             if (TraktRepository.isNotAuthorized())
                 TraktRepository.authorizeInApp().observe(this, onAuthorizedObserver)
         }
 
-        authInBrowserButton.onClick {
+        binding.authInBrowserButton.onClick {
             if (TraktRepository.isNotAuthorized())
                 TraktRepository.authorizeFromExternalBrowser()
         }
 
-        logoutButton.onClick {
+        binding.logoutButton.onClick {
             TraktRepository.revokeAccessToken().observe(this, Observer {
                 when (it.status) {
                     Status.LOADING -> {
-                        progressIndicator.visible()
+                        binding.progressIndicator.visible()
                     }
                     Status.SUCCESS -> {
-                        Snackbar.make(textv, "Access Revoked", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.textv, "Access Revoked", Snackbar.LENGTH_SHORT).show()
                         TraktRepository.clearData()
                         showAuthButtons()
-                        logoutButton.gone()
-                        progressIndicator.gone()
-                        textv.text = "Logout Successful"
+                        binding.logoutButton.gone()
+                        binding.progressIndicator.gone()
+                        binding.textv.text = "Logout Successful"
                     }
                     Status.ERROR -> {
                         TraktRepository.clearData()
-                        Snackbar.make(textv, "Logout Failed", Snackbar.LENGTH_SHORT).show()
-                        progressIndicator.gone()
+                        Snackbar.make(binding.textv, "Logout Failed", Snackbar.LENGTH_SHORT).show()
+                        binding.progressIndicator.gone()
                     }
                 }
             })
@@ -72,17 +75,17 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun hideAuthButtons() {
-        withAll(authInAppButton, authInBrowserButton, orTextLabel) {
+        withAll(binding.authInAppButton, binding.authInBrowserButton, binding.orTextLabel) {
             invisible()
         }
-        logoutButton.visible()
+        binding.logoutButton.visible()
     }
 
     private fun showAuthButtons() {
-        withAll(authInAppButton, authInBrowserButton, orTextLabel) {
+        withAll(binding.authInAppButton, binding.authInBrowserButton, binding.orTextLabel) {
             visible()
         }
-        logoutButton.gone()
+        binding.logoutButton.gone()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -91,7 +94,7 @@ class TestActivity : AppCompatActivity() {
             if (TraktRepository.isNotAuthorized()) {
                 TraktRepository.handleResultFromBrowser(intent).observe(this, onAuthorizedObserver)
             } else {
-                textv.text = TraktRepository.getAccessToken().toString()
+                binding.textv.text = TraktRepository.getAccessToken().toString()
             }
         }
     }

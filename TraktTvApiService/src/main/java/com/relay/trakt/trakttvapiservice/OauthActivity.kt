@@ -10,11 +10,13 @@ import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import com.relay.trakt.trakttvapiservice.constants.Constants
 import com.relay.trakt.trakttvapiservice.constants.Constants.CODE
-import kotlinx.android.synthetic.main.activity_oauth.*
+import com.relay.trakt.trakttvapiservice.databinding.ActivityOauthBinding
 import timber.log.Timber
 
 
 class OauthActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityOauthBinding
 
     private val webViewClient = object : WebViewClient() {
 
@@ -56,11 +58,12 @@ class OauthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_oauth)
+        binding = ActivityOauthBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         intent?.getStringExtra(Constants.Intent.AUTH_URL)?.let {
             redirectUri = intent?.getStringExtra(Constants.Intent.REDIRECT_URI).toString()
-            webview.apply {
+            binding.webview.apply {
                 clearHistory()
                 clearFormData()
                 clearMatches()
@@ -69,9 +72,9 @@ class OauthActivity : AppCompatActivity() {
 
             clearCookies(this)
 
-            webview.webViewClient = webViewClient
+            binding.webview.webViewClient = webViewClient
 
-            webview.loadUrl(it)
+            binding.webview.loadUrl(it)
             Timber.e(it)
         }
     }

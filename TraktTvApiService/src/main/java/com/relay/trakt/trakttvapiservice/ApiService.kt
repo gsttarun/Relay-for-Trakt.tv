@@ -47,10 +47,10 @@ interface ApiService {
     suspend fun getUserSettings(): UserSettings
 
     @GET("/movies/trending") // this API has pagination
-    suspend fun getTrendingMovies( @QueryMap queryMap: Map<String, Int>): List<TrendingMovies>
+    suspend fun getTrendingMovies(@QueryMap queryMap: Map<String, Int>): List<TrendingMovies>
 
     @GET("/movies/popular") // this API has pagination
-    suspend fun getPopularMovies(): List<PopularMovies>
+    suspend fun getPopularMovies(): List<Movie>
 }
 
 fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean = true): ApiService {
