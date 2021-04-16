@@ -208,7 +208,7 @@ object TraktRepository {
         )
 
         onAuthorizedLiveData.postValue(Resource.loading())
-        apiService.getAccessToken(bodyJson).enqueue(RCallback.getCallback {
+        apiService.getAccessToken(bodyJson).enqueue(rCallback {
             onSuccess { authTokenResponse, _ ->
                 authTokenResponse?.accessToken?.let { accessToken ->
                     this@TraktRepository.accessToken = accessToken
@@ -247,7 +247,7 @@ object TraktRepository {
                 clientId = clientId
         )
 
-        apiService.refreshAccessToken(bodyJson).enqueue(RCallback.getCallback {
+        apiService.refreshAccessToken(bodyJson).enqueue(rCallback {
             onSuccess { authTokenResponse, message ->
                 authTokenResponse?.accessToken?.let { accessToken ->
                     this@TraktRepository.accessToken = accessToken
@@ -275,7 +275,7 @@ object TraktRepository {
         )
 
         revokeAccessResultLiveData.postValue(Resource.loading())
-        apiService.revokeAccessToken(bodyJson).enqueue(RCallback.getCallback {
+        apiService.revokeAccessToken(bodyJson).enqueue(rCallback {
             onSuccess { _, message ->
                 revokeAccessResultLiveData.postValue(Resource.success(null, message))
             }

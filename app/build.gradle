@@ -39,7 +39,7 @@ android {
             buildConfigField 'String', 'CLIENT_SECRET', localProperties['Staging_ClientSecret']
             manifestPlaceholders = [hostPath  : localProperties['Staging_HostName'],
                                     schemeName: localProperties['Staging_Scheme'],
-                                    appName:'@string/app_name_staging']
+                                    appName   : '@string/app_name_staging']
         }
 
         production {
@@ -50,7 +50,7 @@ android {
             buildConfigField 'String', 'CLIENT_SECRET', localProperties['ClientSecret']
             manifestPlaceholders = [hostPath  : localProperties['HostName'],
                                     schemeName: localProperties['Scheme'],
-                                    appName:'@string/app_name']
+                                    appName   : '@string/app_name']
         }
     }
 
@@ -61,6 +61,11 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+}
+
+androidExtensions {
+    experimental = true
+    features = ["parcelize"]
 }
 
 dependencies {

@@ -2,32 +2,29 @@ package com.relay.trakt.tv
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
-import com.relay.trakt.trakttvapiservice.Resource
 import com.relay.trakt.trakttvapiservice.Status
 import com.relay.trakt.trakttvapiservice.TraktRepository
+import com.relay.trakt.trakttvapiservice.rObserver
 import kotlinx.android.synthetic.main.activity_main.*
 
 class TestActivity : AppCompatActivity() {
 
-    val onAuthorizedObserver = Observer<Resource<String>> {
-        when (it.status) {
-            Status.LOADING -> {
-                progressIndicator.visible()
-            }
-            Status.SUCCESS -> {
-                textv.text = TraktRepository.getAccessToken().toString()
-                hideAuthButtons()
-                progressIndicator.gone()
-            }
-            Status.ERROR -> {
-                textv.text = it.message
-                progressIndicator.gone()
-            }
+    private val onAuthorizedObserver = rObserver<String> {
+        onLoading {
+            progressIndicator.visible()
+        }
+        onSuccess { _, _ ->
+            textv.text = TraktRepository.getAccessToken().toString()
+            hideAuthButtons()
+            progressIndicator.gone()
+
+        }
+        onError { message, throwable ->
+            textv.text = message
+            progressIndicator.gone()
         }
     }
 
