@@ -1,4 +1,4 @@
-package com.relay.trakt.trakttvapiservice
+package com.relay.trakt.trakttvapiservice.constants
 
 object ApiConstants {
 
@@ -18,6 +18,7 @@ object ApiConstants {
     const val BEARER = "Bearer"
     const val PAGE = "page"
     const val LIMIT = "limit"
+    const val TRAKT_API_VERSION_NUMBER = "2"
 
     object GRANT_TYPE {
         const val GRANT_TYPE = "grant_type"

@@ -1,4 +1,4 @@
-package com.relay.trakt.trakttvapiservice.model
+package com.relay.trakt.trakttvapiservice.model.standardMedia
 
 import com.google.gson.annotations.SerializedName
 

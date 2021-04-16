@@ -5,12 +5,14 @@ import android.net.Uri
 import android.net.UrlQuerySanitizer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.relay.trakt.trakttvapiservice.ApiConstants.CLIENT_ID
-import com.relay.trakt.trakttvapiservice.ApiConstants.GRANT_TYPE
-import com.relay.trakt.trakttvapiservice.ApiConstants.REDIRECT_URI
-import com.relay.trakt.trakttvapiservice.ApiConstants.RESPONSE_TYPE
-import com.relay.trakt.trakttvapiservice.ApiConstants.RESPONSE_TYPE_CODE
-import com.relay.trakt.trakttvapiservice.Constants.Preferences.TRAKT_PREFERENCES
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.CLIENT_ID
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.GRANT_TYPE
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.REDIRECT_URI
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.RESPONSE_TYPE
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.RESPONSE_TYPE_CODE
+import com.relay.trakt.trakttvapiservice.constants.Constants
+import com.relay.trakt.trakttvapiservice.constants.Constants.Preferences.TRAKT_PREFERENCES
+import com.relay.trakt.trakttvapiservice.constants.TraktStatusCodes
 import com.relay.trakt.trakttvapiservice.model.userSettings.UserSettings
 import com.relay.trakt.trakttvapiservice.request.AccessTokenRequest
 import com.relay.trakt.trakttvapiservice.request.RefreshTokenRequest
@@ -224,7 +226,7 @@ object TraktRepository {
             }
             onFailure { authTokenResponse, message, _, rawResponse ->
                 if (rawResponse != null) {
-                    if (rawResponse.code() == 401) {
+                    if (rawResponse.code() == TraktStatusCodes.C401.code) {
                         onAuthorizedLiveData.postValue(Resource.error("Invalid Client, Please remove app from recents and open app again"))
                     }
                 } else {

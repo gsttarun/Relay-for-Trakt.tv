@@ -8,7 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
-import com.relay.trakt.trakttvapiservice.Constants.CODE
+import com.relay.trakt.trakttvapiservice.constants.Constants
+import com.relay.trakt.trakttvapiservice.constants.Constants.CODE
 import kotlinx.android.synthetic.main.activity_oauth.*
 import timber.log.Timber
 

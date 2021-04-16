@@ -1,9 +1,8 @@
-package com.relay.trakt.trakttvapiservice.model.movies
+package com.relay.trakt.trakttvapiservice.model.standardMedia
 
 import com.google.gson.annotations.SerializedName
-import com.relay.trakt.trakttvapiservice.model.Ids
 
-data class PopularMovies(
+data class Movie(
 
 		@field:SerializedName("year")
 	val year: Int? = null,

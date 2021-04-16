@@ -1,14 +1,15 @@
 package com.relay.trakt.trakttvapiservice
 
 import com.google.gson.JsonObject
-import com.relay.trakt.trakttvapiservice.ApiConstants.APPLICATION_JSON
-import com.relay.trakt.trakttvapiservice.ApiConstants.AUTHORIZATION
-import com.relay.trakt.trakttvapiservice.ApiConstants.CONTENT_TYPE
-import com.relay.trakt.trakttvapiservice.ApiConstants.TRAKT_API_KEY
-import com.relay.trakt.trakttvapiservice.ApiConstants.TRAKT_API_VERSION
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.APPLICATION_JSON
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.AUTHORIZATION
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.CONTENT_TYPE
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.TRAKT_API_KEY
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.TRAKT_API_VERSION
+import com.relay.trakt.trakttvapiservice.constants.ApiConstants.TRAKT_API_VERSION_NUMBER
 import com.relay.trakt.trakttvapiservice.model.authToken.AuthTokenResponse
-import com.relay.trakt.trakttvapiservice.model.movies.PopularMovies
 import com.relay.trakt.trakttvapiservice.model.movies.TrendingMovies
+import com.relay.trakt.trakttvapiservice.model.standardMedia.Movie
 import com.relay.trakt.trakttvapiservice.model.userSettings.UserSettings
 import com.relay.trakt.trakttvapiservice.request.AccessTokenRequest
 import com.relay.trakt.trakttvapiservice.request.RefreshTokenRequest
@@ -59,7 +60,7 @@ fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean 
             request.newBuilder().apply {
                 addHeader(CONTENT_TYPE, APPLICATION_JSON)
                 addHeader(TRAKT_API_KEY, clientId)
-                addHeader(TRAKT_API_VERSION, "2")
+                addHeader(TRAKT_API_VERSION, TRAKT_API_VERSION_NUMBER)
                 TraktRepository.getAccessToken()?.let { accessToken ->
                     addHeader(AUTHORIZATION, "BEARER $accessToken")
                 }
@@ -83,6 +84,7 @@ fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean 
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create()
+
 }
 
 private fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {

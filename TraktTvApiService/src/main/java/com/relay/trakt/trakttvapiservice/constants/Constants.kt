@@ -1,4 +1,4 @@
-package com.relay.trakt.trakttvapiservice
+package com.relay.trakt.trakttvapiservice.constants
 
 internal object Constants {
     object IntentAction {
