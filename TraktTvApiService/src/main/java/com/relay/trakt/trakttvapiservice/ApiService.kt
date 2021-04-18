@@ -1,5 +1,7 @@
 package com.relay.trakt.trakttvapiservice
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.JsonObject
 import com.relay.trakt.trakttvapiservice.constants.ApiConstants.APPLICATION_JSON
 import com.relay.trakt.trakttvapiservice.constants.ApiConstants.AUTHORIZATION
@@ -53,7 +55,7 @@ interface ApiService {
     suspend fun getPopularMovies(): List<Movie>
 }
 
-fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean = true): ApiService {
+fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean = true, context:Context): ApiService {
 
     val headerInterceptor = Interceptor {
         val request = it.request().let { request ->
@@ -70,9 +72,15 @@ fun getApiService(baseUrl: String, clientId: String, enableHttpLogging: Boolean 
         return@Interceptor it.proceed(request)
     }
 
+    val interceptor = ChuckerInterceptor.Builder(context)
+            .alwaysReadResponseBody(true)
+            .redactHeaders(TRAKT_API_KEY, AUTHORIZATION)
+            .build()
+
     val okHttpClient = OkHttpClient.Builder().apply {
         connectTimeout(60, TimeUnit.SECONDS)
         addInterceptor(headerInterceptor)
+        addInterceptor(interceptor)
         if (enableHttpLogging) addInterceptor(getHttpLoggingInterceptor())
 //        authenticator(TokenAuthenticator())
     }.build()

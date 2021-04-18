@@ -21,7 +21,7 @@ class RelayApplication : Application() {
                 clientId = BuildConfig.CLIENT_ID,
                 clientSecret = BuildConfig.CLIENT_SECRET,
                 redirectURI = BuildConfig.REDIRECT_URI,
-                weakContext = WeakReference(this@RelayApplication),
+                weakContext = WeakReference(applicationContext),
                 isStaging = BuildConfig.IS_STAGING
         )
     }

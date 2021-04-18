@@ -13,6 +13,7 @@ import com.relay.trakt.trakttvapiservice.constants.ApiConstants.RESPONSE_TYPE_CO
 import com.relay.trakt.trakttvapiservice.constants.Constants
 import com.relay.trakt.trakttvapiservice.constants.Constants.Preferences.TRAKT_PREFERENCES
 import com.relay.trakt.trakttvapiservice.constants.TraktStatusCodes
+import com.relay.trakt.trakttvapiservice.model.standardMedia.Movie
 import com.relay.trakt.trakttvapiservice.model.userSettings.UserSettings
 import com.relay.trakt.trakttvapiservice.request.AccessTokenRequest
 import com.relay.trakt.trakttvapiservice.request.RefreshTokenRequest
@@ -75,13 +76,14 @@ object TraktRepository {
         this.isStaging = isStaging
         this.weakContext.doWithContext {
             this.sharedPreferences = it.getSharedPreferences(TRAKT_PREFERENCES, Context.MODE_PRIVATE)
+            apiService =
+                    getApiService(
+                            baseUrl = if (isStaging) Constants.STAGING_URL else Constants.BASE_URL,
+                            clientId = clientId,
+                            context = it)
         }
         accessToken = sharedPreferences?.getString(Constants.Preferences.DATA_ACCESS_TOKEN, null)
         refreshToken = sharedPreferences?.getString(Constants.Preferences.DATA_REFRESH_TOKEN, null)
-        apiService = if (isStaging)
-                        getApiService(Constants.STAGING_URL, clientId)
-                    else
-                        getApiService(Constants.BASE_URL, clientId)
 
         if (enableLogging && Timber.treeCount() == 0)
             Timber.plant(Timber.DebugTree())
@@ -93,7 +95,7 @@ object TraktRepository {
 
     private fun getAuthorizeUrl(): String {
         val queryMap = getAuthorizeQueryMap()
-        val url = if(isStaging) Constants.STAGING_AUTH_URL else Constants.AUTH_URL
+        val url = if (isStaging) Constants.STAGING_AUTH_URL else Constants.AUTH_URL
         return apiService.authorize(url, queryMap).request().url.toString()
     }
 
@@ -306,5 +308,7 @@ object TraktRepository {
 
 
     suspend fun getUserSettings(): UserSettings = apiService.getUserSettings()
+
+    suspend fun getPopularMovies(): List<Movie> = apiService.getPopularMovies()
 
 }

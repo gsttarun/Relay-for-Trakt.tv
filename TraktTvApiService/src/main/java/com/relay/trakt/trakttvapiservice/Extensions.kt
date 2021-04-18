@@ -3,6 +3,7 @@ package com.relay.trakt.trakttvapiservice
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import java.lang.Exception
 import java.lang.ref.WeakReference
 
 fun SharedPreferences.putString(key: String, value: String) {
@@ -20,3 +21,5 @@ fun WeakReference<Context>.doWithContext(block: (context: Context) -> Unit) {
         block(context)
     }
 }
+
+fun Exception.getNotNullMessage(): String = message ?: "Null"
